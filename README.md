@@ -1,4 +1,6 @@
-# CYD ESP32 Camera System
+# Camera and CYD - ESP32 Camera System
+
+**Project Name:** camera-and-cyd
 
 A complete camera system for the CYD (Cheap Yellow Display) with ESP32, featuring live video streaming, web-based controls, and on-device display.
 

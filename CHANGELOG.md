@@ -1,8 +1,9 @@
-# Changelog
+# Changelog - camera-and-cyd
 
 ## [1.1.0] - 2026-01-30
 
 ### Added
+- **Project Name:** Officially named "camera-and-cyd"
 - **HTTP Basic Authentication** for web access
   - Username and password protection on all endpoints
   - Default credentials: admin/esp32cam (should be changed)

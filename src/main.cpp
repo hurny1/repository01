@@ -1,3 +1,13 @@
+/**
+ * Camera and CYD - ESP32 Camera System
+ * Project: camera-and-cyd
+ * 
+ * A complete camera system for the CYD (Cheap Yellow Display) with ESP32.
+ * Features: Live streaming, web controls, authentication, image storage
+ * 
+ * Version: 1.1.0
+ */
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>

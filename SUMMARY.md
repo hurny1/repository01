@@ -1,6 +1,6 @@
 # Implementation Summary
 
-## Project Overview
+## Project Overview - camera-and-cyd
 
 This implementation provides a complete camera system for the CYD (Cheap Yellow Display), fulfilling all requirements from the problem statement:
 
