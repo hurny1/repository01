@@ -1,6 +1,8 @@
 # CYD ESP32 Camera System
 
-A complete camera system for the CYD (Cheap Yellow Display) with ESP32-CAM, featuring live video streaming, web-based controls, and on-device display.
+A complete camera system for the CYD (Cheap Yellow Display) with ESP32, featuring live video streaming, web-based controls, and on-device display.
+
+**Single Board Setup:** This project uses the CYD's built-in ESP32 to control BOTH a camera module AND the display.
 
 ## Features
 
@@ -14,39 +16,54 @@ A complete camera system for the CYD (Cheap Yellow Display) with ESP32-CAM, feat
 ## Hardware Requirements
 
 ### Required Components
-1. **ESP32-CAM** (AI-Thinker module recommended)
-   - Built-in OV2640 camera
-   - PSRAM for better performance
-2. **CYD (Cheap Yellow Display)**
+1. **CYD (Cheap Yellow Display)**
    - ESP32 with ST7789 TFT display (240x320)
-   - Touch screen support
+   - Built-in touch screen
+   - This is your main board
+2. **Camera Module** (one of the following)
+   - OV2640 camera module (recommended, 2MP)
+   - OV7670 camera module (VGA)
+   - Any ESP32-compatible camera module
 3. **Power Supply**
-   - 5V USB power or appropriate power source
+   - 5V USB power supply (1A minimum)
+   - Quality USB cable
 4. **Wiring**
-   - Connect ESP32-CAM to CYD ESP32 as per wiring diagram below
+   - Dupont wires or soldering for camera connections
+   - See WIRING.md for detailed pin connections
 
 ### Pin Connections
 
-#### ESP32-CAM Default Pins (AI-Thinker)
+#### Camera Module to CYD Connections
+
+Connect your camera module to the CYD's ESP32 GPIO pins:
+
 ```
-D0:    GPIO5
-D1:    GPIO18
-D2:    GPIO19
-D3:    GPIO21
-D4:    GPIO36
-D5:    GPIO39
-D6:    GPIO34
-D7:    GPIO35
-XCLK:  GPIO0
-PCLK:  GPIO22
-VSYNC: GPIO25
-HREF:  GPIO23
-SDA:   GPIO26
-SCL:   GPIO27
-PWDN:  GPIO32
+Camera Module       CYD GPIO
+-------------       --------
+D0         -------> GPIO5
+D1         -------> GPIO18
+D2         -------> GPIO19
+D3         -------> GPIO4
+D4         -------> GPIO35
+D5         -------> GPIO34
+D6         -------> GPIO39
+D7         -------> GPIO32
+XCLK       -------> GPIO0
+PCLK       -------> GPIO22
+VSYNC      -------> GPIO25
+HREF       -------> GPIO23
+SDA        -------> GPIO26
+SCL        -------> GPIO27
+3.3V       -------> 3.3V
+GND        -------> GND
 ```
 
-#### CYD Display Pins
+**Note:** GPIO4 is used for D3 (instead of GPIO21) to avoid conflict with display backlight.
+
+#### CYD Display Pins (Pre-wired)
+
+The display is already connected inside the CYD:
+
 ```
 TFT_MOSI: GPIO13
 TFT_SCLK: GPIO14

@@ -1,87 +1,110 @@
 # CYD ESP32 Camera Wiring Guide
 
-## Connection Diagram
+## Single Board Configuration
 
-### Important Note on Pin Configuration
+**⚠️ Important:** This project uses a **SINGLE ESP32** setup where the CYD's built-in ESP32 controls both the display AND a camera module.
 
-**⚠️ GPIO Pin Allocation:**
-This project assumes you have TWO separate ESP32 boards:
-1. **ESP32-CAM** - Handles camera operations
-2. **CYD (ESP32 with display)** - Displays status and controls
-
-Both connect to the same WiFi network. The camera streams to the CYD via WiFi.
-
-If you want to use a **single ESP32** with both camera and display, you MUST modify the pin assignments to avoid conflicts, particularly GPIO21 which is used by both the camera (D3) and display (backlight).
-
-### ESP32-CAM to CYD ESP32 Wiring
-
+### System Architecture
 ```
-ESP32-CAM           CYD ESP32
----------           ---------
-5V         -------> 5V
-GND        -------> GND
-U0TXD      -------> U0RXD (for programming)
-U0RXD      -------> U0TXD (for programming)
+┌─────────────────────────────────┐
+│         CYD Board               │
+│  ┌───────────────────────────┐  │
+│  │      ESP32 (main)         │  │
+│  │  ┌─────────┐  ┌─────────┐ │  │
+│  │  │ Camera  │  │ Display │ │  │
+│  │  │ Module  │  │ ST7789  │ │  │
+│  │  └─────────┘  └─────────┘ │  │
+│  └───────────────────────────┘  │
+└─────────────────────────────────┘
 ```
 
-**Note**: For camera operation, the ESP32-CAM runs independently. The CYD acts as a display and control interface via WiFi.
+### Camera Module to CYD ESP32 Connections
 
-### Alternative Setup: Integrated System
+**Camera Module → CYD ESP32 GPIO Pins:**
 
-If using a single ESP32 with both camera and display:
+| Camera Pin | Function | CYD GPIO | Notes |
+|------------|----------|----------|-------|
+| D0 | Data 0 | GPIO5 | |
+| D1 | Data 1 | GPIO18 | |
+| D2 | Data 2 | GPIO19 | |
+| D3 | Data 3 | GPIO4 | ⚠️ Changed to avoid GPIO21 conflict |
+| D4 | Data 4 | GPIO35 | Input only pin |
+| D5 | Data 5 | GPIO34 | Input only pin |
+| D6 | Data 6 | GPIO39 | Input only pin |
+| D7 | Data 7 | GPIO32 | |
+| XCLK | Clock | GPIO0 | Camera clock |
+| PCLK | Pixel Clock | GPIO22 | |
+| VSYNC | V-Sync | GPIO25 | |
+| HREF | H-Ref | GPIO23 | |
+| SDA | I2C Data | GPIO26 | SCCB (camera I2C) |
+| SCL | I2C Clock | GPIO27 | SCCB (camera I2C) |
+| 3.3V | Power | 3.3V | Camera power |
+| GND | Ground | GND | Common ground |
 
-```
-Component          ESP32 Pin
----------          ---------
-Camera Data Bus    As defined in camera_config.h
-Display MOSI       GPIO13
-Display SCLK       GPIO14
-Display CS         GPIO15
-Display DC         GPIO2
-Display BL         GPIO21
-Touch CS           GPIO33
-Touch IRQ          GPIO36
-```
+### Display Pins (Built-in to CYD)
+
+**CYD Display → ESP32 GPIO (Pre-wired):**
+
+| Display Pin | Function | CYD GPIO |
+|-------------|----------|----------|
+| MOSI | SPI Data | GPIO13 |
+| SCLK | SPI Clock | GPIO14 |
+| CS | Chip Select | GPIO15 |
+| DC | Data/Command | GPIO2 |
+| BL | Backlight | GPIO21 |
+
+### Touch Screen Pins (Built-in to CYD)
+
+| Touch Pin | Function | CYD GPIO |
+|-----------|----------|----------|
+| CS | Chip Select | GPIO33 |
+| IRQ | Interrupt | GPIO36 |
 
 ## Wiring Tips
 
-1. **Power Supply**
-   - Use a stable 5V power source
-   - Camera can draw significant current (300-400mA)
-   - Avoid powering from USB if current is insufficient
+### Important Notes for Single Board Setup
 
-2. **Signal Integrity**
-   - Keep camera data wires short
-   - Use twisted pairs for I2C lines (SDA/SCL)
-   - Add 100nF capacitor near camera power pins
+1. **Camera Module Types**
+   - OV2640 module (recommended)
+   - OV7670 module (needs different config)
+   - Most common camera modules work
+   - Must be 3.3V compatible
 
-3. **Programming**
-   - Pull GPIO0 to GND for flash mode
-   - Use FTDI or CH340 programmer
-   - Connect EN to 3.3V through 10K resistor
+2. **Power Considerations**
+   - Camera draws 100-200mA
+   - Display draws 40-60mA  
+   - Total: 200-300mA minimum
+   - Use 5V power supply with at least 1A capacity
+   - CYD's 3.3V regulator powers the camera
+
+3. **Pin Conflict Resolution**
+   - Display backlight uses GPIO21
+   - Camera D3 changed to GPIO4 (was GPIO21 in ESP32-CAM standard)
+   - This allows both to work together
+   - No wiring changes needed for display (built-in to CYD)
 
 ## Pin Configuration Reference
 
-### ESP32-CAM (AI-Thinker)
+### Camera Module Pins (Connect to CYD)
 
-| Function | GPIO | Notes |
-|----------|------|-------|
-| D0 | 5 | Data bit 0 |
-| D1 | 18 | Data bit 1 |
-| D2 | 19 | Data bit 2 |
-| D3 | 21 | Data bit 3 |
-| D4 | 36 | Data bit 4 |
-| D5 | 39 | Data bit 5 |
-| D6 | 34 | Data bit 6 |
-| D7 | 35 | Data bit 7 |
-| XCLK | 0 | Camera clock |
-| PCLK | 22 | Pixel clock |
-| VSYNC | 25 | Vertical sync |
-| HREF | 23 | Horizontal ref |
-| SDA | 26 | I2C data |
-| SCL | 27 | I2C clock |
-| PWDN | 32 | Power down |
-| LED | 4 | Flash LED |
+| Function | CYD GPIO | Direction | Notes |
+|----------|----------|-----------|-------|
+| D0 | 5 | Input | Data bit 0 |
+| D1 | 18 | Input | Data bit 1 |
+| D2 | 19 | Input | Data bit 2 |
+| D3 | 4 | Input | Data bit 3 (modified for CYD) |
+| D4 | 35 | Input | Data bit 4 (input only) |
+| D5 | 34 | Input | Data bit 5 (input only) |
+| D6 | 39 | Input | Data bit 6 (input only) |
+| D7 | 32 | Input | Data bit 7 |
+| XCLK | 0 | Output | Camera clock (20MHz) |
+| PCLK | 22 | Input | Pixel clock |
+| VSYNC | 25 | Input | Vertical sync |
+| HREF | 23 | Input | Horizontal ref |
+| SDA | 26 | I/O | I2C data (SCCB) |
+| SCL | 27 | Output | I2C clock (SCCB) |
+| 3.3V | 3.3V | Power | Camera power |
+| GND | GND | Ground | Common ground |
 
 ### CYD Display (ST7789)
 
@@ -98,18 +121,21 @@ Touch IRQ          GPIO36
 
 | Component | Current Draw | Notes |
 |-----------|--------------|-------|
-| ESP32 Core | 80-160mA | Active WiFi |
-| Camera | 100-200mA | During capture |
-| Display | 20-40mA | Depends on brightness |
-| LED Flash | 0-150mA | When enabled |
-| **Total** | **200-550mA** | Peak consumption |
+| ESP32 Core | 80-240mA | WiFi active |
+| Camera Module | 80-150mA | During capture |
+| TFT Display | 40-60mA | Depends on brightness |
+| Backlight LED | 20-40mA | At full brightness |
+| **Total** | **220-490mA** | Peak consumption |
+
+**Recommended Power Supply:** 5V @ 1A minimum
 
 ## Troubleshooting
 
 ### Camera Issues
-- **No camera detected**: Check power and I2C connections (GPIO26, GPIO27)
-- **Poor image quality**: Verify camera lens focus and lighting
-- **Brownout detector**: Insufficient power supply
+- **No camera detected**: Check I2C connections (GPIO26, GPIO27) and power
+- **Camera init failed**: Verify all data pins connected correctly
+- **Poor image quality**: Check camera lens focus and ensure good lighting
+- **Brownout detector**: Insufficient power supply, use 5V @ 1A
 
 ### Display Issues
 - **Blank screen**: Check SPI connections and backlight

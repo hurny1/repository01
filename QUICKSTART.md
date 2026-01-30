@@ -2,19 +2,23 @@
 
 ## 🚀 Get Started in 5 Minutes
 
-### Step 1: Hardware Setup
-1. Connect ESP32-CAM to power (5V)
-2. Connect CYD display to power
-3. Ensure both devices are on the same network
+### Step 0: Hardware Setup
+1. **Get your CYD board** - The ESP32 with built-in display
+2. **Get a camera module** - OV2640 recommended (2MP camera)
+3. **Wire the camera to CYD** - Follow pin connections in WIRING.md:
+   - Connect camera data pins (D0-D7) to CYD GPIO pins
+   - Connect camera I2C (SDA/SCL) to GPIO26/27
+   - Connect camera power (3.3V) and ground (GND)
+4. **Power the CYD** - Use 5V USB supply (1A minimum)
 
-### Step 2: Configure WiFi
+### Step 1: Configure WiFi
 Edit `src/main.cpp` lines 11-12:
 ```cpp
 const char* ssid = "YourWiFiName";      // Change this
 const char* password = "YourPassword";   // Change this
 ```
 
-### Step 3: Upload Code
+### Step 2: Upload Code
 ```bash
 # Install PlatformIO if you haven't already
 pip install platformio
@@ -29,7 +33,7 @@ pio run -t upload
 pio device monitor
 ```
 
-### Step 4: Access Web Interface
+### Step 3: Access Web Interface
 1. Look for the IP address in serial monitor output
 2. Open browser and go to: `http://[IP_ADDRESS]/`
 3. You should see the live camera stream!

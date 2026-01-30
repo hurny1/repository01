@@ -1,32 +1,41 @@
 # Important Configuration Notes
 
-## System Architecture Options
+## System Architecture
 
-This project supports two hardware configurations:
+This project uses a **SINGLE BOARD** configuration:
 
-### Option 1: Two Separate Boards (Recommended)
-- **ESP32-CAM**: Runs the camera and web server
-- **CYD Display**: Shows camera status via WiFi connection
-- Both boards connect to the same WiFi network
-- No pin conflicts, easier setup
+### Hardware Setup (Current Configuration)
+- **CYD Board**: ESP32 with built-in ST7789 display (320x240)
+- **Camera Module**: OV2640 or compatible, connected to CYD GPIO pins
+- **Single ESP32**: Controls both display and camera
+- **Pin Assignment**: Optimized to avoid conflicts
 
-### Option 2: Single Board (Advanced)
-- Single ESP32 with both camera module and display
-- Requires careful pin assignment to avoid conflicts
-- More compact but harder to configure
+```
+┌─────────────────────────────┐
+│       CYD Board             │
+│  ┌───────────────────────┐  │
+│  │     ESP32             │  │
+│  │    (controls          │  │
+│  │     everything)       │  │
+│  │                       │  │
+│  │  ┌─────┐   ┌──────┐  │  │
+│  │  │Cam  │   │ TFT  │  │  │
+│  │  │Mod  │   │Display│ │  │
+│  │  └─────┘   └──────┘  │  │
+│  └───────────────────────┘  │
+└─────────────────────────────┘
+```
 
-## Pin Conflict Warning
+## Pin Assignment Details
 
-⚠️ **GPIO21 Conflict:** The default configuration has a pin conflict:
-- Camera uses GPIO21 for D3 (data line)
-- Display uses GPIO21 for TFT_BL (backlight)
+### Pin Conflict Resolution
 
-**If using Option 1 (two boards):** No issue, each board uses its own GPIO21.
+**✅ Resolved:** The default ESP32-CAM pin layout uses GPIO21 for camera D3, but CYD uses GPIO21 for display backlight.
 
-**If using Option 2 (single board):** You MUST reassign pins:
-- Change display backlight to GPIO22 or GPIO33
-- OR change camera D3 to another available GPIO
-- Update both `platformio.ini` and `camera_config.h`
+**Solution Implemented:**
+- Camera D3 reassigned to GPIO4
+- Display backlight remains on GPIO21
+- Both components now work together without conflicts
 
 ## WiFi Credentials
 

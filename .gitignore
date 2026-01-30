@@ -27,3 +27,4 @@ Thumbs.db
 *.bak
 *.log
 /tmp/
+_codeql_detected_source_root

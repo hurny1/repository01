@@ -2,12 +2,15 @@
 
 ## Project Overview
 
-This implementation provides a complete camera system for the CYD (Cheap Yellow Display) with ESP32-CAM, fulfilling all requirements from the problem statement:
+This implementation provides a complete camera system for the CYD (Cheap Yellow Display), fulfilling all requirements from the problem statement:
+
+**Hardware Setup:** Single ESP32 board (CYD) with camera module attached
 
 ✅ **Fix a camera on a CYD with ESP32**
-- Fully implemented ESP32-CAM support with OV2640 camera
-- Complete camera initialization and configuration
-- Pin configurations documented
+- CYD's built-in ESP32 controls the camera module
+- OV2640 or compatible camera module support
+- Pin configuration optimized to avoid conflicts
+- GPIO4 used for camera D3 (instead of GPIO21)
 
 ✅ **Create a web page to watch the video**
 - Beautiful, responsive web interface
