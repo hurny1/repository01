@@ -48,6 +48,9 @@ This project uses a **SINGLE BOARD** configuration:
 #define SECRETS_H
 const char* ssid = "YourWiFiSSID";
 const char* password = "YourWiFiPassword";
+// Web authentication
+const char* www_username = "your_username";
+const char* www_password = "your_strong_password";
 #endif
 ```
 
@@ -60,6 +63,33 @@ secrets.h
 ```cpp
 #include "secrets.h"
 ```
+
+## Web Authentication
+
+**NEW:** HTTP Basic Authentication is now required for all web endpoints.
+
+**Default Credentials:**
+- Username: `admin`
+- Password: `esp32cam`
+
+⚠️ **CRITICAL:** Change these defaults immediately! Edit `src/main.cpp`:
+```cpp
+const char* www_username = "admin";        // Change this
+const char* www_password = "esp32cam";     // Change this
+```
+
+**Password Guidelines:**
+- Use at least 12 characters
+- Mix uppercase, lowercase, numbers, and symbols
+- Don't use common words or patterns
+- Don't reuse passwords from other services
+
+**How Authentication Works:**
+- HTTP Basic Authentication
+- Browser will prompt for credentials
+- Credentials stored in browser session
+- All API endpoints protected
+- 401 Unauthorized returned without valid credentials
 
 ## Resolution Settings
 

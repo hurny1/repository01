@@ -11,6 +11,10 @@
 const char* ssid = "YOUR_WIFI_SSID";
 const char* password = "YOUR_WIFI_PASSWORD";
 
+// Web authentication credentials - update these for security
+const char* www_username = "admin";
+const char* www_password = "esp32cam";
+
 // Web server on port 80
 WebServer server(80);
 
@@ -46,6 +50,7 @@ void displayPreview();
 void handleTouch();
 void captureAndSave();
 void drawControls();
+bool checkAuthentication();
 
 void setup() {
     Serial.begin(115200);
@@ -167,14 +172,25 @@ void initDisplay() {
     tft.setCursor(0, 0);
 }
 
+bool checkAuthentication() {
+    if (!server.authenticate(www_username, www_password)) {
+        server.requestAuthentication();
+        return false;
+    }
+    return true;
+}
+
 void initWebServer() {
-    // Serve main page
+    // Serve main page (requires authentication)
     server.on("/", HTTP_GET, []() {
+        if (!checkAuthentication()) return;
         server.send_P(200, "text/html", getWebInterface());
     });
     
-    // Video stream endpoint
+    // Video stream endpoint (requires authentication)
     server.on("/stream", HTTP_GET, []() {
+        if (!checkAuthentication()) return;
+        
         WiFiClient client = server.client();
         
         client.println("HTTP/1.1 200 OK");
@@ -202,8 +218,10 @@ void initWebServer() {
         }
     });
     
-    // Camera settings endpoint
+    // Camera settings endpoint (requires authentication)
     server.on("/settings", HTTP_GET, []() {
+        if (!checkAuthentication()) return;
+        
         String json = "{";
         json += "\"brightness\":" + String(cameraSettings.brightness) + ",";
         json += "\"contrast\":" + String(cameraSettings.contrast) + ",";
@@ -215,8 +233,10 @@ void initWebServer() {
         server.send(200, "application/json", json);
     });
     
-    // Update settings endpoint
+    // Update settings endpoint (requires authentication)
     server.on("/settings", HTTP_POST, []() {
+        if (!checkAuthentication()) return;
+        
         if (server.hasArg("brightness")) {
             int val = server.arg("brightness").toInt();
             cameraSettings.brightness = constrain(val, -2, 2);
@@ -244,14 +264,18 @@ void initWebServer() {
         server.send(200, "text/plain", "Settings updated");
     });
     
-    // Capture and save image
+    // Capture and save image (requires authentication)
     server.on("/capture", HTTP_GET, []() {
+        if (!checkAuthentication()) return;
+        
         captureAndSave();
         server.send(200, "text/plain", "Image captured");
     });
     
-    // List saved images
+    // List saved images (requires authentication)
     server.on("/images", HTTP_GET, []() {
+        if (!checkAuthentication()) return;
+        
         File root = SPIFFS.open("/");
         String json = "[";
         bool first = true;
@@ -277,6 +301,7 @@ void initWebServer() {
     
     server.begin();
     Serial.println("Web server started");
+    Serial.println("Authentication enabled - use credentials to access");
 }
 
 void updateCameraSettings() {

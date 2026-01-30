@@ -36,7 +36,11 @@ pio device monitor
 ### Step 3: Access Web Interface
 1. Look for the IP address in serial monitor output
 2. Open browser and go to: `http://[IP_ADDRESS]/`
-3. You should see the live camera stream!
+3. **Enter login credentials when prompted:**
+   - Default username: `admin`
+   - Default password: `esp32cam`
+   - (Change these in `src/main.cpp` for security)
+4. You should see the live camera stream!
 
 ## 📺 What You'll See
 

@@ -6,6 +6,7 @@
 - ✅ ESP32-CAM initialization with OV2640 camera
 - ✅ WiFi connectivity and auto-connection
 - ✅ HTTP web server on port 80
+- ✅ **HTTP Basic Authentication for web access** 🔒
 - ✅ Live MJPEG video streaming
 - ✅ CYD TFT display integration (ST7789, 320x240)
 - ✅ SPIFFS storage for captured images
@@ -149,15 +150,19 @@
 ## 🛡️ Security Considerations
 
 ### Current State
-- ⚠️ No authentication implemented
-- ⚠️ Open access on local network
+- ✅ **HTTP Basic Authentication implemented**
+- ✅ Password protection on all endpoints
+- ⚠️ Credentials stored in source code (change them!)
 - ⚠️ HTTP only (no HTTPS)
+- ⚠️ Default credentials should be changed
 
 ### Recommendations
+- **Change default username/password immediately**
+- Use strong passwords (12+ characters)
+- Store credentials in separate file (not in git)
 - Use on trusted networks only
 - Don't expose to internet without VPN
-- Consider adding authentication
-- Implement HTTPS for production
+- Consider implementing HTTPS for production
 - Regular firmware updates
 
 ## 🔧 Compatibility

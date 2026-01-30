@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.0] - 2026-01-30
+
+### Added
+- **HTTP Basic Authentication** for web access
+  - Username and password protection on all endpoints
+  - Default credentials: admin/esp32cam (should be changed)
+  - Browser login prompt for secure access
+- Authentication documentation in all guides
+
+### Security
+- All web endpoints now require authentication
+- Protected video stream from unauthorized access
+- Protected camera controls and settings
+- Protected image capture and storage access
+
 ## [1.0.0] - 2026-01-30
 
 ### Added

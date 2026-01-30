@@ -5,6 +5,11 @@
 const char* ssid = "YourNetworkName";
 const char* password = "YourNetworkPassword";
 
+// Web Authentication (NEW - v1.1.0)
+// IMPORTANT: Change these default credentials!
+const char* www_username = "admin";
+const char* www_password = "esp32cam";
+
 // Camera Settings (optional - defaults are fine for most cases)
 // Brightness: -2 to 2 (0 = default)
 // Contrast: -2 to 2 (0 = default)
@@ -18,6 +23,7 @@ const char* password = "YourNetworkPassword";
 // Network Settings
 // The web server runs on port 80 by default
 // Access via http://[ESP32_IP_ADDRESS]/
+// Authentication required: username and password
 
 // Storage Settings
 // Images are saved to SPIFFS with filenames like: /img_[timestamp].jpg

@@ -87,12 +87,18 @@ TFT_BL:   GPIO21 (backlight)
    cd repository01
    ```
 
-2. **Configure WiFi**
+2. **Configure WiFi and Authentication**
    Edit `src/main.cpp` and update your WiFi credentials:
    ```cpp
    const char* ssid = "YOUR_WIFI_SSID";
    const char* password = "YOUR_WIFI_PASSWORD";
+   
+   // Web authentication credentials - CHANGE THESE!
+   const char* www_username = "admin";
+   const char* www_password = "esp32cam";
    ```
+   
+   ⚠️ **Security Note:** Always change the default username and password!
 
 3. **Build and Upload**
    ```bash
@@ -111,8 +117,36 @@ TFT_BL:   GPIO21 (backlight)
    ```
    http://[ESP32_IP_ADDRESS]/
    ```
+   
+   You will be prompted for authentication:
+   - **Username:** `admin` (default)
+   - **Password:** `esp32cam` (default)
+   
+   ⚠️ **Change the default credentials in `src/main.cpp` for security!**
 
 ## Usage
+
+### Authentication
+
+The system uses HTTP Basic Authentication to protect access to the camera stream and controls.
+
+**Default Credentials:**
+- Username: `admin`
+- Password: `esp32cam`
+
+⚠️ **Security Recommendations:**
+1. **Change default credentials immediately** in `src/main.cpp`
+2. Use a strong password (at least 12 characters)
+3. Keep credentials secure and don't share them
+4. Only use on trusted networks
+5. Consider using a VPN if accessing remotely
+
+**To change credentials:**
+Edit these lines in `src/main.cpp`:
+```cpp
+const char* www_username = "admin";        // Change this
+const char* www_password = "esp32cam";     // Change this
+```
 
 ### Web Interface Features
 
@@ -144,12 +178,14 @@ The CYD display shows:
 
 ### API Endpoints
 
-- `GET /` - Main web interface
-- `GET /stream` - MJPEG video stream
-- `GET /settings` - Get current camera settings (JSON)
-- `POST /settings` - Update camera settings
-- `GET /capture` - Capture and save image
-- `GET /images` - List saved images
+All endpoints require HTTP Basic Authentication:
+
+- `GET /` - Main web interface (requires authentication)
+- `GET /stream` - MJPEG video stream (requires authentication)
+- `GET /settings` - Get current camera settings (JSON, requires authentication)
+- `POST /settings` - Update camera settings (requires authentication)
+- `GET /capture` - Capture and save image (requires authentication)
+- `GET /images` - List saved images (requires authentication)
 
 ## Troubleshooting
 
