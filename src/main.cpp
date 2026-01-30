@@ -54,6 +54,8 @@ void setup() {
     // Initialize SPIFFS for web files and storage
     if (!SPIFFS.begin(true)) {
         Serial.println("SPIFFS initialization failed!");
+        tft.println("SPIFFS FAILED!");
+        while(1) { delay(1000); } // Halt system
     }
     
     // Initialize display
@@ -86,14 +88,13 @@ void setup() {
 void loop() {
     server.handleClient();
     
-    // Update camera preview on display
-    if (showingPreview && (millis() - lastPreviewUpdate > previewInterval)) {
-        displayPreview();
-        lastPreviewUpdate = millis();
-    }
-    
-    // Handle touch input for controls
-    handleTouch();
+    // Note: Preview and touch features not yet implemented
+    // Uncomment when implementations are ready
+    // if (showingPreview && (millis() - lastPreviewUpdate > previewInterval)) {
+    //     displayPreview();
+    //     lastPreviewUpdate = millis();
+    // }
+    // handleTouch();
     
     delay(1);
 }
@@ -135,8 +136,10 @@ void initWiFi() {
     WiFi.begin(ssid, password);
     
     Serial.print("Connecting to WiFi");
+    tft.println("Connecting WiFi...");
+    
     int attempts = 0;
-    while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+    while (WiFi.status() != WL_CONNECTED && attempts < 40) {
         delay(500);
         Serial.print(".");
         attempts++;
@@ -148,6 +151,10 @@ void initWiFi() {
         Serial.println(WiFi.localIP());
     } else {
         Serial.println("\nWiFi connection failed!");
+        tft.setTextColor(TFT_RED, TFT_BLACK);
+        tft.println("WiFi FAILED!");
+        tft.println("Check credentials");
+        while(1) { delay(1000); } // Halt system
     }
 }
 
@@ -211,16 +218,20 @@ void initWebServer() {
     // Update settings endpoint
     server.on("/settings", HTTP_POST, []() {
         if (server.hasArg("brightness")) {
-            cameraSettings.brightness = server.arg("brightness").toInt();
+            int val = server.arg("brightness").toInt();
+            cameraSettings.brightness = constrain(val, -2, 2);
         }
         if (server.hasArg("contrast")) {
-            cameraSettings.contrast = server.arg("contrast").toInt();
+            int val = server.arg("contrast").toInt();
+            cameraSettings.contrast = constrain(val, -2, 2);
         }
         if (server.hasArg("saturation")) {
-            cameraSettings.saturation = server.arg("saturation").toInt();
+            int val = server.arg("saturation").toInt();
+            cameraSettings.saturation = constrain(val, -2, 2);
         }
         if (server.hasArg("quality")) {
-            cameraSettings.quality = server.arg("quality").toInt();
+            int val = server.arg("quality").toInt();
+            cameraSettings.quality = constrain(val, 0, 63);
         }
         if (server.hasArg("mirror")) {
             cameraSettings.mirror = server.arg("mirror") == "true";
@@ -242,17 +253,21 @@ void initWebServer() {
     // List saved images
     server.on("/images", HTTP_GET, []() {
         File root = SPIFFS.open("/");
-        File file = root.openNextFile();
         String json = "[";
         bool first = true;
+        int count = 0;
+        const int MAX_FILES = 50; // Limit to prevent memory issues
         
-        while (file) {
+        File file = root.openNextFile();
+        while (file && count < MAX_FILES) {
             String filename = String(file.name());
             if (filename.endsWith(".jpg")) {
                 if (!first) json += ",";
                 json += "\"" + filename + "\"";
                 first = false;
+                count++;
             }
+            file.close(); // Explicitly close file
             file = root.openNextFile();
         }
         json += "]";
@@ -304,6 +319,15 @@ void captureAndSave() {
         return;
     }
     
+    // Check available space (keep at least 100KB free)
+    size_t totalBytes = SPIFFS.totalBytes();
+    size_t usedBytes = SPIFFS.usedBytes();
+    if ((totalBytes - usedBytes) < (fb->len + 100000)) {
+        Serial.println("SPIFFS space low, cannot save image");
+        esp_camera_fb_return(fb);
+        return;
+    }
+    
     // Generate filename with timestamp
     String filename = "/img_" + String(millis()) + ".jpg";
     
@@ -315,21 +339,27 @@ void captureAndSave() {
         return;
     }
     
-    file.write(fb->buf, fb->len);
+    size_t written = file.write(fb->buf, fb->len);
     file.close();
+    
+    if (written != fb->len) {
+        Serial.println("File write incomplete");
+        SPIFFS.remove(filename); // Clean up partial file
+        esp_camera_fb_return(fb);
+        return;
+    }
     
     Serial.print("Image saved: ");
     Serial.println(filename);
     
     esp_camera_fb_return(fb);
     
-    // Show notification on display
+    // Show notification on display (non-blocking)
     tft.fillRect(0, 0, 320, 30, TFT_GREEN);
     tft.setTextColor(TFT_BLACK, TFT_GREEN);
     tft.setCursor(10, 5);
     tft.println("Image Saved!");
-    delay(1000);
-    drawControls();
+    // Note: drawControls() will be called on next interaction
 }
 
 void drawControls() {

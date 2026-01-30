@@ -2,6 +2,17 @@
 
 ## Connection Diagram
 
+### Important Note on Pin Configuration
+
+**⚠️ GPIO Pin Allocation:**
+This project assumes you have TWO separate ESP32 boards:
+1. **ESP32-CAM** - Handles camera operations
+2. **CYD (ESP32 with display)** - Displays status and controls
+
+Both connect to the same WiFi network. The camera streams to the CYD via WiFi.
+
+If you want to use a **single ESP32** with both camera and display, you MUST modify the pin assignments to avoid conflicts, particularly GPIO21 which is used by both the camera (D3) and display (backlight).
+
 ### ESP32-CAM to CYD ESP32 Wiring
 
 ```
