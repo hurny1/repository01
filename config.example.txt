@@ -1,0 +1,24 @@
+// Example configuration file
+// Copy this to src/main.cpp and update with your settings
+
+// WiFi Configuration
+const char* ssid = "YourNetworkName";
+const char* password = "YourNetworkPassword";
+
+// Camera Settings (optional - defaults are fine for most cases)
+// Brightness: -2 to 2 (0 = default)
+// Contrast: -2 to 2 (0 = default)
+// Saturation: -2 to 2 (0 = default)
+// Quality: 0-63 (10 = default, lower is better quality)
+
+// Display Settings
+// The CYD display is 320x240 pixels
+// Adjust rotation in initDisplay() if needed
+
+// Network Settings
+// The web server runs on port 80 by default
+// Access via http://[ESP32_IP_ADDRESS]/
+
+// Storage Settings
+// Images are saved to SPIFFS with filenames like: /img_[timestamp].jpg
+// SPIFFS size is defined in platformio.ini partition scheme
