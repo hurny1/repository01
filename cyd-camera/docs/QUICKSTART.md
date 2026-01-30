@@ -24,7 +24,7 @@ const char* password = "YourPassword";   // Change this
 pip install platformio
 
 # Navigate to project directory
-cd repository01
+cd repository01/cyd-camera
 
 # Build and upload
 pio run -t upload
