@@ -78,8 +78,10 @@ TFT_BL:   GPIO21 (backlight)
 
 ### Prerequisites
 - [PlatformIO](https://platformio.org/) installed
-- USB drivers for ESP32
+- USB drivers for ESP32 (CH340 or CP210x - see [Upload Guide](UPLOAD_GUIDE.md))
 - Arduino framework
+
+**📖 Need help with uploading?** See the comprehensive [**Upload Guide**](UPLOAD_GUIDE.md) for detailed instructions on driver installation, upload methods, and troubleshooting.
 
 ### Installation Steps
 
@@ -106,6 +108,8 @@ TFT_BL:   GPIO21 (backlight)
    ```bash
    pio run -t upload
    ```
+   
+   **First time uploading?** Check the [**Upload Guide**](UPLOAD_GUIDE.md) for detailed setup instructions, driver installation, and troubleshooting tips.
 
 4. **Monitor Serial Output**
    ```bash
@@ -191,6 +195,15 @@ All endpoints require HTTP Basic Authentication:
 
 ## Troubleshooting
 
+### Upload/Flashing Issues
+**Can't upload firmware to CYD?**
+- Check USB drivers (CH340 or CP210x) are installed
+- Verify USB cable is data-capable (not charge-only)
+- Try manual boot mode: Hold BOOT, press RST, release both
+- Lower upload speed in `platformio.ini`
+
+**📖 For detailed upload troubleshooting, see [Upload Guide](UPLOAD_GUIDE.md)**
+
 ### Camera Not Working
 1. Check that PSRAM is available (message in serial output)
 2. Verify camera pin connections
@@ -223,6 +236,7 @@ camera-and-cyd/
 │   ├── camera_config.h    # ESP32-CAM pin configuration
 │   └── web_interface.h    # Web UI HTML/CSS/JS
 ├── data/                  # SPIFFS data (for saved images)
+├── UPLOAD_GUIDE.md        # Comprehensive upload/flashing guide
 ├── WIRING.md              # Detailed wiring guide
 └── README.md              # This file
 ```

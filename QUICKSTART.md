@@ -19,6 +19,9 @@ const char* password = "YourPassword";   // Change this
 ```
 
 ### Step 2: Upload Code
+
+**📖 New to uploading? See the [Upload Guide](UPLOAD_GUIDE.md) for detailed instructions!**
+
 ```bash
 # Install PlatformIO if you haven't already
 pip install platformio
@@ -32,6 +35,12 @@ pio run -t upload
 # Monitor serial output to get IP address
 pio device monitor
 ```
+
+**Troubleshooting uploads?** Check:
+- USB drivers installed (CH340 or CP210x)
+- Quality USB cable (data-capable, not charge-only)
+- Device appears in device manager / lsusb
+- See [Upload Guide](UPLOAD_GUIDE.md) for complete troubleshooting
 
 ### Step 3: Access Web Interface
 1. Look for the IP address in serial monitor output
