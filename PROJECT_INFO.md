@@ -14,7 +14,7 @@ A complete camera system for the CYD (Cheap Yellow Display) with ESP32, featurin
 - Image capture and storage
 
 ## Repository
-https://github.com/hurny1/repository01
+https://github.com/hurny1/camera-and-cyd
 
 ## Version
 1.1.0 (with password protection)

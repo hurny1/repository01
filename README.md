@@ -85,8 +85,8 @@ TFT_BL:   GPIO21 (backlight)
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/hurny1/repository01.git
-   cd repository01
+   git clone https://github.com/hurny1/camera-and-cyd.git
+   cd camera-and-cyd
    ```
 
 2. **Configure WiFi and Authentication**
@@ -215,7 +215,7 @@ All endpoints require HTTP Basic Authentication:
 ## File Structure
 
 ```
-repository01/
+camera-and-cyd/
 ├── platformio.ini          # PlatformIO configuration
 ├── src/
 │   └── main.cpp           # Main application code
