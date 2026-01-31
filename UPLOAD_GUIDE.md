@@ -61,7 +61,10 @@ To identify which chip your board uses:
 3. Check with: `ls /dev/cu.*`
 4. Look for `/dev/cu.wchusbserial*`
 
-**Note**: macOS Ventura+ may have issues with CH340. Try signed drivers or use alternative methods.
+**Note**: macOS Ventura+ may have issues with CH340. Solutions:
+- Download signed drivers from [WCH's official site](http://www.wch.cn/download/CH341SER_MAC_ZIP.html)
+- Try using a powered USB hub with better compatibility
+- Consider using a CP210x-based adapter if problems persist
 
 #### CP210x Drivers
 Usually works natively on macOS 10.9+, but if needed:
@@ -364,7 +367,7 @@ rst:0x10 (RTCWDT_RTC_RESET)
 2. **Try different USB cable** - Higher quality cable
 3. **Use powered USB hub**
 4. **Add bulk capacitor** (100µF) near ESP32 power pins
-5. **Don't power from computer USB** - Often insufficient current
+5. **Use external power during operation** - Computer USB is fine for upload, but use dedicated 5V supply during camera operation for stable performance
 
 ### Error: Camera Init Failed
 
@@ -471,7 +474,7 @@ Over-The-Air updates allow wireless upload:
 
 ### ❌ Don'ts
 
-1. **Don't power from computer USB** - Often insufficient current
+1. **Don't power camera operation from computer USB** - During runtime, use dedicated 5V supply (USB is OK for upload only)
 2. **Don't skip driver installation** - Required for communication
 3. **Don't use damaged cables** - Causes upload failures
 4. **Don't interrupt uploads** - May corrupt firmware
