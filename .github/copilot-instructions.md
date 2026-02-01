@@ -40,7 +40,7 @@ This is an ESP32-based camera system for the CYD (Cheap Yellow Display) featurin
 ## Project Structure
 
 ```
-repository01/
+camera-and-cyd/
 ├── src/
 │   └── main.cpp              # Main application logic
 ├── include/
@@ -75,7 +75,7 @@ repository01/
 ### ESP32-Specific Guidelines
 - **Memory Management:**
   - Always return camera frame buffers with `esp_camera_fb_return()`
-  - Check PSRAM availability before using high resolutions
+  - Check PSRAM availability before using high resolutions (use `psramFound()` or check `ESP.getPsramSize()`)
   - Monitor heap usage in loops (use `ESP.getFreeHeap()` for debugging)
   - Be cautious with String objects; prefer `const char*` for constants
 
