@@ -75,7 +75,9 @@ camera-and-cyd/
 ### ESP32-Specific Guidelines
 - **Memory Management:**
   - Always return camera frame buffers with `esp_camera_fb_return()`
-  - Check PSRAM availability before using high resolutions (use `psramFound()` or check `ESP.getPsramSize()`)
+  - Check PSRAM availability before using high resolutions:
+    - Use `psramFound()` for simple boolean availability check
+    - Use `ESP.getPsramSize()` to verify minimum PSRAM capacity (returns size in bytes)
   - Monitor heap usage in loops (use `ESP.getFreeHeap()` for debugging)
   - Be cautious with String objects; prefer `const char*` for constants
 
@@ -184,7 +186,7 @@ camera-and-cyd/
 
 ### Debugging Tips
 - Enable verbose serial output for troubleshooting
-- Check PSRAM availability: Look for "PSRAM found" in serial output
+- Check PSRAM availability programmatically with `psramFound()` or `ESP.getPsramSize()`, or look for "PSRAM found" in serial output
 - Monitor heap usage if experiencing crashes: `Serial.printf("Free heap: %d\n", ESP.getFreeHeap())`
 - Use `--no-pager` with git commands for cleaner output
 - Check camera connections if "Camera init failed" appears
